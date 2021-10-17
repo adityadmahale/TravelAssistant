@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -6,6 +7,8 @@ public class TravelAssistant {
     
     // Stores the city name and its corresponding City object.
     Map<String, City> cities = new HashMap<>();
+    // Adjacency list
+    Map<City, List<TravelOption>> adjacencyList = new HashMap<>();
     
     public boolean addCity( String cityName, boolean testRequired, int timeToTest,
 	    int nightlyHotelCost) throws IllegalArgumentException {
@@ -20,6 +23,8 @@ public class TravelAssistant {
 	var city = new City(cityName, testRequired, timeToTest, nightlyHotelCost);
 	cities.put(cityName, city);
 	
+	// Add the city to the adjacency list.
+	adjacencyList.put(city, new ArrayList<>());
 	return true;
     }
     
@@ -35,30 +40,43 @@ public class TravelAssistant {
     
     private boolean addTravelMode(String startCity, String destinationCity, int duration,
 	    int cost, String mode) throws IllegalArgumentException {
-	if (!isTravelInputsCorrect(startCity, destinationCity, duration, cost)) return false;
-		
-		
-	return true;
-    }
-    
-    private boolean isTravelInputsCorrect(String startCity, String destinationCity, int duration,
-	    int cost) throws IllegalArgumentException {
 	// Check if the cost and duration are negative values
 	if (duration < 0 || cost < 0) throw new IllegalArgumentException();
 	
 	// Get the start city object. Throw an exception if the city is not present.
 	var fromCity = cities.get(startCity);
 	if (fromCity == null) throw new IllegalArgumentException();
-			
+				
 	// Get the destination city object. Throw an exception if the city is not present.
 	var toCity = cities.get(destinationCity);
 	if (toCity == null) throw new IllegalArgumentException();
+	
+	// Check if the inputs are correct
+	if (!isTravelInputsCorrect(fromCity, toCity, duration, cost, mode)) return false;
+	
+	// At this point, the inputs are correct. So, a new edge can be added between the two cities.
+	adjacencyList.get(fromCity).add(new TravelOption(fromCity, toCity, mode, cost, duration));
 		
-	// Throw an exception if the start and destination are the same city
+	return true;
+    }
+    
+    private boolean isTravelInputsCorrect(City fromCity, City toCity, int duration,
+	    int cost, String mode) throws IllegalArgumentException {	
+	// Throw an exception if the start and destination are the same city.
 	if (fromCity == toCity) throw new IllegalArgumentException();
+	
+	// Handle the case when the edge is already present.
+	String destinationCity;
+	String modeOfTravel;
+	for (var travelOption: adjacencyList.get(fromCity)) {
+	    destinationCity = travelOption.getDestinationCity().getCityName();
+	    modeOfTravel = travelOption.getMode();
+	    if (destinationCity.equals(toCity.getCityName()) && modeOfTravel.equals(mode)) return false;
+	}
 	
 	return true;
     }
+    
     
     public List<String> planTrip ( String startCity, String destinationCity, boolean isVaccinated, int
 	    costImportance, int travelTimeImportance, int travelHopImportance ) throws
