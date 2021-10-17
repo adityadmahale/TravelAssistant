@@ -23,14 +23,38 @@ public class TravelAssistant {
 	return true;
     }
     
-    public boolean addFlight( String startCity, String destinationCity, int flightTime,
+    public boolean addFlight(String startCity, String destinationCity, int flightTime,
 	    int flightCost) throws IllegalArgumentException {
-	return false;
+	return addTravelMode(startCity, destinationCity, flightTime, flightCost, "flight");
     }
     
-    boolean addTrain( String startCity, String destinationCity, int trainTime, int trainCost)
+    public boolean addTrain(String startCity, String destinationCity, int trainTime, int trainCost)
 	    throws IllegalArgumentException {
-	return false;
+	return addTravelMode(startCity, destinationCity, trainTime, trainCost, "train");
+    }
+    
+    private boolean addTravelMode(String startCity, String destinationCity, int duration,
+	    int cost, String mode) throws IllegalArgumentException {
+	if (!isTravelInputsCorrect(startCity, destinationCity, duration, cost)) return false;
+		
+		
+	return true;
+    }
+    
+    private boolean isTravelInputsCorrect(String startCity, String destinationCity, int duration,
+	    int cost) throws IllegalArgumentException {
+	// Get the start city object. Throw an exception if the city is not present.
+	var fromCity = cities.get(startCity);
+	if (fromCity == null) throw new IllegalArgumentException();
+			
+	// Get the destination city object. Throw an exception if the city is not present.
+	var toCity = cities.get(destinationCity);
+	if (toCity == null) throw new IllegalArgumentException();
+		
+	// Throw an exception if the start and destination are the same city
+	if (fromCity == toCity) throw new IllegalArgumentException();
+	
+	return true;
     }
     
     public List<String> planTrip ( String startCity, String destinationCity, boolean isVaccinated, int

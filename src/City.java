@@ -15,7 +15,7 @@ public class City {
     
     @Override
     public String toString() {
-	return cityName;
+	return "(" + cityName + ")";
     }
 
     public String getCityName() {
