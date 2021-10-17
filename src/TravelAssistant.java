@@ -77,6 +77,13 @@ public class TravelAssistant {
 	return true;
     }
     
+    public void print() {
+	for (City startCity: adjacencyList.keySet()) {
+	    var destinations =  adjacencyList.get(startCity);
+	    if (!destinations.isEmpty()) System.out.println(startCity + " -> " + destinations);
+	}
+    }
+    
     
     public List<String> planTrip ( String startCity, String destinationCity, boolean isVaccinated, int
 	    costImportance, int travelTimeImportance, int travelHopImportance ) throws

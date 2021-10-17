@@ -1,5 +1,6 @@
 
 public class TravelOption {
+
     City startCity;
     City destinationCity;
     private String mode;
@@ -13,6 +14,11 @@ public class TravelOption {
 	this.mode = mode;
 	this.cost = cost;
 	this.duration = duration;
+    }
+    
+    @Override
+    public String toString() {
+	return destinationCity + "(" + mode + ")";
     }
 
     public City getStartCity() {
