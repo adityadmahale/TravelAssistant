@@ -1,5 +1,6 @@
 
 public class City {
+
     private String cityName;
     private boolean testRequired;
     private int timeToTest;
@@ -10,6 +11,11 @@ public class City {
 	this.testRequired = testRequired;
 	this.timeToTest = timeToTest;
 	this.nightlyHotelCosts = nightlyHotelCosts;
+    }
+    
+    @Override
+    public String toString() {
+	return cityName;
     }
 
     public String getCityName() {
