@@ -9,12 +9,12 @@ public class TravelAssistant {
     
     public boolean addFlight( String startCity, String destinationCity, int flightTime,
 	    int flightCost) throws IllegalArgumentException {
-		return false;
+	return false;
     }
     
     boolean addTrain( String startCity, String destinationCity, int trainTime, int trainCost)
 	    throws IllegalArgumentException {
-		return false;
+	return false;
     }
     
     public List<String> planTrip ( String startCity, String destinationCity, boolean isVaccinated, int
