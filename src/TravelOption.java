@@ -3,10 +3,10 @@ public class TravelOption {
     City startCity;
     City destinationCity;
     private String mode;
-    private float cost;
+    private int cost;
     private int duration;
     
-    public TravelOption(City startCity, City destinationCity, String mode, float cost,
+    public TravelOption(City startCity, City destinationCity, String mode, int cost,
 	    int duration) {
 	this.startCity = startCity;
 	this.destinationCity = destinationCity;

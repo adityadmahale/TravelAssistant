@@ -43,6 +43,9 @@ public class TravelAssistant {
     
     private boolean isTravelInputsCorrect(String startCity, String destinationCity, int duration,
 	    int cost) throws IllegalArgumentException {
+	// Check if the cost and duration are negative values
+	if (duration < 0 || cost < 0) throw new IllegalArgumentException();
+	
 	// Get the start city object. Throw an exception if the city is not present.
 	var fromCity = cities.get(startCity);
 	if (fromCity == null) throw new IllegalArgumentException();
