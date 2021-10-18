@@ -90,4 +90,8 @@ public class TravelAssistant {
 	    IllegalArgumentException {
 	return null;
     }
+    
+    private int getTotalCost(TravelHop hop, boolean isVaccinated) {
+	return !isVaccinated ? hop.getDestinationCity().getTotalHotelCosts() + hop.getCost(): hop.getCost();
+    }
 }

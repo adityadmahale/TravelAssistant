@@ -4,9 +4,9 @@ public class City {
     private String cityName;
     private boolean testRequired;
     private int timeToTest;
-    private float nightlyHotelCosts;
+    private int nightlyHotelCosts;
     
-    public City(String cityName, boolean testRequired, int timeToTest, float nightlyHotelCosts) {
+    public City(String cityName, boolean testRequired, int timeToTest, int nightlyHotelCosts) {
 	this.cityName = cityName;
 	this.testRequired = testRequired;
 	this.timeToTest = timeToTest;
@@ -30,9 +30,12 @@ public class City {
 	return timeToTest;
     }
 
-    public float getNightlyHotelCosts() {
+    public int getNightlyHotelCosts() {
 	return nightlyHotelCosts;
     }
     
+    public int getTotalHotelCosts() {
+	return timeToTest * nightlyHotelCosts;
+    }
     
 }

@@ -33,7 +33,7 @@ public class TravelHop {
         return mode;
     }
 
-    public float getCost() {
+    public int getCost() {
         return cost;
     }
 
