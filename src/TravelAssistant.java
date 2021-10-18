@@ -8,7 +8,7 @@ public class TravelAssistant {
     // Stores the city name and its corresponding City object.
     Map<String, City> cities = new HashMap<>();
     // Adjacency list
-    Map<City, List<TravelOption>> adjacencyList = new HashMap<>();
+    Map<City, List<TravelHop>> adjacencyList = new HashMap<>();
     
     public boolean addCity( String cityName, boolean testRequired, int timeToTest,
 	    int nightlyHotelCost) throws IllegalArgumentException {
@@ -55,7 +55,7 @@ public class TravelAssistant {
 	if (!isTravelInputsCorrect(fromCity, toCity, duration, cost, mode)) return false;
 	
 	// At this point, the inputs are correct. So, a new edge can be added between the two cities.
-	adjacencyList.get(fromCity).add(new TravelOption(fromCity, toCity, mode, cost, duration));
+	adjacencyList.get(fromCity).add(new TravelHop(fromCity, toCity, mode, cost, duration));
 		
 	return true;
     }
