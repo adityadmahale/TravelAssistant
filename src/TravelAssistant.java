@@ -91,7 +91,10 @@ public class TravelAssistant {
 	return null;
     }
     
-    private int getTotalCost(TravelHop hop, boolean isVaccinated) {
-	return !isVaccinated ? hop.getDestinationCity().getTotalHotelCosts() + hop.getCost(): hop.getCost();
+    private int getHopWeight(int costImportance, int travelTimeImportance, int travelHopImportance,
+	    TravelHop hop, boolean isVaccinated) {
+	return hop.getTotalCost(isVaccinated) * costImportance + hop.getDuration() * travelTimeImportance +
+		travelHopImportance;
     }
+
 }
