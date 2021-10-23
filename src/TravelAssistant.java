@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TravelAssistant {
     
@@ -30,12 +32,12 @@ public class TravelAssistant {
     
     public boolean addFlight(String startCity, String destinationCity, int flightTime,
 	    int flightCost) throws IllegalArgumentException {
-	return addTravelMode(startCity, destinationCity, flightTime, flightCost, "flight");
+	return addTravelHop(startCity, destinationCity, flightTime, flightCost, "flight");
     }
     
     public boolean addTrain(String startCity, String destinationCity, int trainTime, int trainCost)
 	    throws IllegalArgumentException {
-	return addTravelMode(startCity, destinationCity, trainTime, trainCost, "train");
+	return addTravelHop(startCity, destinationCity, trainTime, trainCost, "train");
     }
     
     private void validateCities(City fromCity, City toCity) throws IllegalArgumentException {
@@ -47,7 +49,7 @@ public class TravelAssistant {
 	}
     }
     
-    private boolean addTravelMode(String startCity, String destinationCity, int duration,
+    private boolean addTravelHop(String startCity, String destinationCity, int duration,
 	    int cost, String mode) throws IllegalArgumentException {
 	// Check if the cost and duration are negative values
 	if (duration < 0 || cost < 0) throw new IllegalArgumentException();
@@ -58,7 +60,7 @@ public class TravelAssistant {
 	validateCities(fromCity, toCity);
 	
 	// Check if the travel mode is already present
-	if (isTravelModePresent(fromCity, toCity, mode)) return false;
+	if (isTravelHopPresent(fromCity, toCity, mode)) return false;
 	
 	// At this point, the inputs are correct. So, a new edge can be added between the two cities.
 	adjacencyList.get(fromCity).add(new TravelHop(fromCity, toCity, mode, cost, duration));
@@ -66,7 +68,7 @@ public class TravelAssistant {
 	return true;
     }
     
-    private boolean isTravelModePresent(City fromCity, City toCity, String mode) 
+    private boolean isTravelHopPresent(City fromCity, City toCity, String mode) 
 	    throws IllegalArgumentException {		
 	// Handle the case when the edge is already present.
 	String destinationCity;
@@ -104,6 +106,20 @@ public class TravelAssistant {
 	// When an unvaccinated individual plans to travel to a destination city
 	// where the testing is required, but the city does not have the covid test centre
 	if (!isVaccinated && toCity.isTestRequired() && toCity.getTimeToTest() < 0) return null;
+	
+	// Set for storing visited cities
+	Set<City> visited = new HashSet<>();
+	
+	// Stores the distance table from the "fromCity" node
+	Map<City, Integer> distances = new HashMap<>();
+	
+	// Initialize the table with max value for all the nodes
+	for (City city: cities.values()) {
+	    distances.put(city, Integer.MAX_VALUE);
+	}
+	
+	// Set fromCity distance to 0
+	distances.put(fromCity, 0);
 	
 	return null;
     }
