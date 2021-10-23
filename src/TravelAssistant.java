@@ -38,7 +38,7 @@ public class TravelAssistant {
 	return addTravelMode(startCity, destinationCity, trainTime, trainCost, "train");
     }
     
-    private void areNodesCorrect(City fromCity, City toCity) throws IllegalArgumentException {
+    private void validateCities(City fromCity, City toCity) throws IllegalArgumentException {
 	// Throw an exception if:
 	// The start and destination are the same city.
 	// The start and destination cities are not present
@@ -55,7 +55,7 @@ public class TravelAssistant {
 	// Get the start city and destination city objects
 	var fromCity = cities.get(startCity);
 	var toCity = cities.get(destinationCity);
-	areNodesCorrect(fromCity, toCity);
+	validateCities(fromCity, toCity);
 	
 	// Check if the travel mode is already present
 	if (isTravelModePresent(fromCity, toCity, mode)) return false;
@@ -91,6 +91,15 @@ public class TravelAssistant {
     public List<String> planTrip ( String startCity, String destinationCity, boolean isVaccinated, int
 	    costImportance, int travelTimeImportance, int travelHopImportance ) throws
 	    IllegalArgumentException {
+	
+	// Check if the importance parameters are non-negative integers
+	if (costImportance < 0 || travelTimeImportance < 0 || travelHopImportance < 0)
+	    throw new IllegalArgumentException();
+	
+	// Get the start city and destination city objects
+	var fromCity = cities.get(startCity);
+	var toCity = cities.get(destinationCity);
+	validateCities(fromCity, toCity);
 	
 	return null;
     }
