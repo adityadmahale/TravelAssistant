@@ -35,7 +35,7 @@ public class City {
     }
     
     public int getTotalHotelCosts() {
-	return timeToTest * nightlyHotelCosts;
+	return testRequired ? timeToTest * nightlyHotelCosts : 0;
     }
     
 }

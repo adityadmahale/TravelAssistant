@@ -101,6 +101,10 @@ public class TravelAssistant {
 	var toCity = cities.get(destinationCity);
 	validateCities(fromCity, toCity);
 	
+	// When an unvaccinated individual plans to travel to a destination city
+	// where the testing is required, but the city does not have the covid test centre
+	if (!isVaccinated && toCity.isTestRequired() && toCity.getTimeToTest() < 0) return null;
+	
 	return null;
     }
     
