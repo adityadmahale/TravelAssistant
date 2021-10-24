@@ -117,7 +117,7 @@ public class TravelAssistant {
 	
 	// When an unvaccinated individual plans to travel to a destination city
 	// where the testing is required, but the city does not have the covid test centre
-	if (!isVaccinated && toCity.isTestRequired() && toCity.getTimeToTest() < 0) return null;
+	if (!toCity.isVisitable(isVaccinated)) return null;
 	
 	// Set for storing visited cities
 	Set<City> visited = new HashSet<>();
