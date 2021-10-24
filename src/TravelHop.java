@@ -1,4 +1,5 @@
-
+// Edge of the graph
+// Holds travel related information
 public class TravelHop {
 
     private City startCity;

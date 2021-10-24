@@ -1,4 +1,5 @@
-
+// Vertex of the graph
+// Holds city related information
 public class City {
 
     private String cityName;
