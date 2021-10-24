@@ -1,15 +1,20 @@
 
+// Holds city and it corresponding cumulative weight
 public class CityWeight implements Comparable<CityWeight> {
-	City city;
-	int distance;
+	private City city;
+	private int weight;
 	
-	public CityWeight(City city, int distance) {
+	public CityWeight(City city, int weight) {
 	    this.city = city;
-	    this.distance = distance;
+	    this.weight = weight;
 	}
-
+	
 	@Override
 	public int compareTo(CityWeight o) {
-	    return Integer.compare(distance, o.distance);
+	    return Integer.compare(weight, o.weight);
+	}
+
+	public City getCity() {
+	    return city;
 	}
 }

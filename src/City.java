@@ -29,15 +29,13 @@ public class City {
     public int getTimeToTest() {
 	return timeToTest;
     }
-
-    public int getNightlyHotelCosts() {
-	return nightlyHotelCosts;
-    }
     
+    // Returns total hotel cost of staying in the city
     public int getTotalHotelCosts() {
 	return testRequired ? timeToTest * nightlyHotelCosts : 0;
     }
     
+    // Method to check if it is possible to visit the city
     public boolean isVisitable(boolean isVaccinated) {
 	if (isVaccinated) return true;
 	

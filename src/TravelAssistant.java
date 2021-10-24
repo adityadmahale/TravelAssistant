@@ -11,6 +11,7 @@ public class TravelAssistant {
     
     // Stores the city name and its corresponding City object.
     Map<String, City> cities = new HashMap<>();
+    
     // Adjacency list
     Map<City, List<TravelHop>> adjacencyList = new HashMap<>();
     
@@ -80,12 +81,15 @@ public class TravelAssistant {
 	for (var travelOption: adjacencyList.get(fromCity)) {
 	    destinationCity = travelOption.getDestinationCity().getCityName();
 	    modeOfTravel = travelOption.getMode();
+	    
+	    // If the travel hop is already present, then return true
 	    if (destinationCity.equals(toCity.getCityName()) && modeOfTravel.equals(mode)) return true;
 	}
 	
 	return false;
     }
     
+    // Method to print the graph
     public void print() {
 	for (City startCity: adjacencyList.keySet()) {
 	    var destinations =  adjacencyList.get(startCity);
@@ -141,14 +145,14 @@ public class TravelAssistant {
 	
 	while(!queue.isEmpty()) {
 	    // Remove the city with priority
-	    City current = queue.remove().city;
+	    City current = queue.remove().getCity();
 	    
 	    // Add to the city to the visited set
 	    visited.add(current);
 	    
 	    // Loop for all the neighboring cities
 	    for (var hop: adjacencyList.get(current)) {
-		City neighborCity = hop.destinationCity;
+		City neighborCity = hop.getDestinationCity();
 		
 		// If the city is already visited, then skip
 		if (visited.contains(neighborCity)) continue;
