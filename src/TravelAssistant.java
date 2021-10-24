@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Stack;
 
 public class TravelAssistant {
     
@@ -31,11 +32,13 @@ public class TravelAssistant {
 	return true;
     }
     
+    // Adds flight between two cities
     public boolean addFlight(String startCity, String destinationCity, int flightTime,
 	    int flightCost) throws IllegalArgumentException {
-	return addTravelHop(startCity, destinationCity, flightTime, flightCost, "flight");
+	return addTravelHop(startCity, destinationCity, flightTime, flightCost, "fly");
     }
     
+    // Add train between two cities
     public boolean addTrain(String startCity, String destinationCity, int trainTime, int trainCost)
 	    throws IllegalArgumentException {
 	return addTravelHop(startCity, destinationCity, trainTime, trainCost, "train");
@@ -124,7 +127,8 @@ public class TravelAssistant {
 	Map<City, City> previousCities = new HashMap<>();
 	
 	// Table for storing mode of travel
-	Map<City, String> mode = new HashMap<>();
+	Map<City, String> modes = new HashMap<>();
+	modes.put(fromCity, "start");
 	
 	// Set fromCity distance to 0
 	weights.put(fromCity, 0);
@@ -159,20 +163,49 @@ public class TravelAssistant {
 		// If the new weight is less, then update the weight
 		if (newWeight < weights.get(neighborCity)) {
 		    weights.put(neighborCity, newWeight);
+		    
+		    // Update the previousCities table
 		    previousCities.put(neighborCity, current);
-		    mode.put(neighborCity, hop.getMode());
+		    
+		    // Update the mode of travel table
+		    modes.put(neighborCity, hop.getMode());
+		    
+		    // Add it to the queue
 		    queue.add(new CityWeight(neighborCity, newWeight));
 		}
 	    } 
 	}
 	
-	// If there's no route then return null
+	// If there's no route, then return null
 	if (weights.get(toCity) == Integer.MAX_VALUE) return null;
 	
-	
-	
-	return null;
+	return getPath(toCity, modes, previousCities);
     }
     
-    
+    // Returns the list of paths between two cities
+    private List<String> getPath(City toCity, Map<City, String> modes, Map<City, City> previousCities) {
+	
+	// A stack to retrieve the information in the reverse order from the previousCities table
+	Stack<City> stack = new Stack<>();
+	
+	// Push the destination city to the stack
+	stack.push(toCity);
+	
+	// Push all the cities to by getting the previously visted cities
+	City previousCity = previousCities.get(toCity);
+	while(previousCity != null) {
+	    stack.push(previousCity);
+	    previousCity = previousCities.get(previousCity);
+	}
+	
+	// Remove all items from the stack to get the paths in order
+	List<String> path = new ArrayList<>();
+	City city;
+	while (!stack.isEmpty()) {
+	    city = stack.pop();
+	    path.add(modes.get(city) + " " + city.getCityName());
+	}
+	
+	return path;
+    }
 }
