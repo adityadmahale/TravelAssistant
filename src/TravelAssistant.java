@@ -22,11 +22,12 @@ public class TravelAssistant {
     
     public boolean addCity( String cityName, boolean testRequired, int timeToTest,
 	    int nightlyHotelCost) throws IllegalArgumentException {
+	
+	// Validate city name and nightly hotel cost
+	if (!isCityNameValid(cityName) || nightlyHotelCost < 0) throw new IllegalArgumentException();
+	
 	// If the city is already known by the TravelAssistant, then return false
 	if (cities.containsKey(cityName)) return false;
-	
-	// Throw an exception when then the hotel cost is invalid
-	if (nightlyHotelCost < 0) throw new IllegalArgumentException();
 	
 	// At this point, the passed arguments are correct.
 	// Create a new City object and add it to the cities Map.
@@ -36,6 +37,10 @@ public class TravelAssistant {
 	// Add the city to the adjacency list.
 	adjacencyList.put(city, new ArrayList<>());
 	return true;
+    }
+    
+    private boolean isCityNameValid(String cityName) {
+	return cityName != null && cityName != "";
     }
     
     // Adds flight between two cities
@@ -106,8 +111,9 @@ public class TravelAssistant {
 	    costImportance, int travelTimeImportance, int travelHopImportance ) throws
 	    IllegalArgumentException {
 	
-	// Check if the importance parameters are non-negative integers
-	if (costImportance < 0 || travelTimeImportance < 0 || travelHopImportance < 0)
+	// Validate input values
+	if (!isCityNameValid(startCity) || !isCityNameValid(destinationCity) ||
+		costImportance < 0 || travelTimeImportance < 0 || travelHopImportance < 0)
 	    throw new IllegalArgumentException();
 	
 	// Get the start city and destination city objects
