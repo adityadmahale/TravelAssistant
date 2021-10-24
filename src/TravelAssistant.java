@@ -9,6 +9,11 @@ import java.util.Stack;
 
 public class TravelAssistant {
     
+    // Constants defining mode of travel
+    public static final String MODE_START = "start";
+    public static final String MODE_FLY = "fly";
+    public static final String MODE_TRAIN = "train";
+    
     // Stores the city name and its corresponding City object.
     Map<String, City> cities = new HashMap<>();
     
@@ -36,13 +41,13 @@ public class TravelAssistant {
     // Adds flight between two cities
     public boolean addFlight(String startCity, String destinationCity, int flightTime,
 	    int flightCost) throws IllegalArgumentException {
-	return addTravelHop(startCity, destinationCity, flightTime, flightCost, "fly");
+	return addTravelHop(startCity, destinationCity, flightTime, flightCost, MODE_FLY);
     }
     
     // Add train between two cities
     public boolean addTrain(String startCity, String destinationCity, int trainTime, int trainCost)
 	    throws IllegalArgumentException {
-	return addTravelHop(startCity, destinationCity, trainTime, trainCost, "train");
+	return addTravelHop(startCity, destinationCity, trainTime, trainCost, MODE_TRAIN);
     }
     
     private void validateCities(City fromCity, City toCity) throws IllegalArgumentException {
@@ -132,7 +137,7 @@ public class TravelAssistant {
 	
 	// Table for storing mode of travel
 	Map<City, String> modes = new HashMap<>();
-	modes.put(fromCity, "start");
+	modes.put(fromCity, MODE_START);
 	
 	// Set fromCity distance to 0
 	weights.put(fromCity, 0);
