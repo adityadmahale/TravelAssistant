@@ -37,7 +37,7 @@ public class TravelHop {
         return cost;
     }
     
-    public int getTotalCost(boolean isVaccinated) {
+    private int getTotalCost(boolean isVaccinated) {
 	return !isVaccinated ? destinationCity.getTotalHotelCosts() + cost: cost;
     }
 
@@ -45,4 +45,9 @@ public class TravelHop {
         return duration;
     }
     
+    public int getHopWeight(int costImportance, int travelTimeImportance, 
+	    int travelHopImportance, boolean isVaccinated) {
+	return getTotalCost(isVaccinated) * costImportance + duration * travelTimeImportance +
+		travelHopImportance;
+    }
 }

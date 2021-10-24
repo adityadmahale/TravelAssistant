@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 public class TravelAssistant {
@@ -89,7 +90,6 @@ public class TravelAssistant {
 	}
     }
     
-    
     public List<String> planTrip ( String startCity, String destinationCity, boolean isVaccinated, int
 	    costImportance, int travelTimeImportance, int travelHopImportance ) throws
 	    IllegalArgumentException {
@@ -111,23 +111,53 @@ public class TravelAssistant {
 	Set<City> visited = new HashSet<>();
 	
 	// Stores the distance table from the "fromCity" node
-	Map<City, Integer> distances = new HashMap<>();
+	Map<City, Integer> weights = new HashMap<>();
 	
 	// Initialize the table with max value for all the nodes
 	for (City city: cities.values()) {
-	    distances.put(city, Integer.MAX_VALUE);
+	    weights.put(city, Integer.MAX_VALUE);
 	}
 	
 	// Set fromCity distance to 0
-	distances.put(fromCity, 0);
+	weights.put(fromCity, 0);
+	
+	// Process cities in priority
+	PriorityQueue<CityWeight> queue = new PriorityQueue<>();
+	
+	// Add the start city to the queue
+	queue.add(new CityWeight(fromCity, 0));
+	
+	while(!queue.isEmpty()) {
+	    // Remove the city with priority
+	    City current = queue.remove().city;
+	    
+	    // Add to the city to the visited set
+	    visited.add(current);
+	    
+	    // Loop for all the neighboring cities
+	    for (var hop: adjacencyList.get(current)) {
+		City neighborCity = hop.destinationCity;
+		
+		// If the city is already visited, then skip
+		if (visited.contains(neighborCity)) continue;
+		
+		// If not vaccinated and the test cannot be taken at the city, then skip
+		if (!isVaccinated && neighborCity.isTestRequired() && neighborCity.getTimeToTest() < 0) continue;
+		
+		// Calculate new weight
+		var newWeight = weights.get(current) + hop.getHopWeight(costImportance, travelTimeImportance,
+			travelHopImportance, isVaccinated);
+		
+		// If the new weight is less, then update the weight
+		if (newWeight < weights.get(neighborCity)) {
+		    weights.put(neighborCity, newWeight);
+		    queue.add(new CityWeight(neighborCity, newWeight));
+		}
+	    }
+	    
+	}
 	
 	return null;
-    }
-    
-    private int getHopWeight(int costImportance, int travelTimeImportance, int travelHopImportance,
-	    TravelHop hop, boolean isVaccinated) {
-	return hop.getTotalCost(isVaccinated) * costImportance + hop.getDuration() * travelTimeImportance +
-		travelHopImportance;
     }
 
 }
