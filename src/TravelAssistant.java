@@ -113,9 +113,11 @@ public class TravelAssistant {
 	// Stores the distance table from the "fromCity" node
 	Map<City, Integer> weights = new HashMap<>();
 	
-	// Initialize the table with max value for all the nodes
+	// Initialize the table with max value for all the visitable cities
 	for (City city: cities.values()) {
-	    weights.put(city, Integer.MAX_VALUE);
+	    if (city.isVisitable(isVaccinated)) {
+		weights.put(city, Integer.MAX_VALUE);
+	    }
 	}
 	
 	// Set fromCity distance to 0
@@ -142,7 +144,7 @@ public class TravelAssistant {
 		if (visited.contains(neighborCity)) continue;
 		
 		// If not vaccinated and the test cannot be taken at the city, then skip
-		if (!isVaccinated && neighborCity.isTestRequired() && neighborCity.getTimeToTest() < 0) continue;
+		if (!neighborCity.isVisitable(isVaccinated)) continue;
 		
 		// Calculate new weight
 		var newWeight = weights.get(current) + hop.getHopWeight(costImportance, travelTimeImportance,
@@ -159,5 +161,6 @@ public class TravelAssistant {
 	
 	return null;
     }
-
+    
+    
 }

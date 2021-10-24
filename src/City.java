@@ -38,4 +38,10 @@ public class City {
 	return testRequired ? timeToTest * nightlyHotelCosts : 0;
     }
     
+    public boolean isVisitable(boolean isVaccinated) {
+	if (isVaccinated) return true;
+	
+	return !(testRequired && timeToTest < 0);
+    }
+    
 }
