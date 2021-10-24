@@ -120,6 +120,12 @@ public class TravelAssistant {
 	    }
 	}
 	
+	// Table for storing previous cities
+	Map<City, City> previousCities = new HashMap<>();
+	
+	// Table for storing mode of travel
+	Map<City, String> mode = new HashMap<>();
+	
 	// Set fromCity distance to 0
 	weights.put(fromCity, 0);
 	
@@ -153,11 +159,17 @@ public class TravelAssistant {
 		// If the new weight is less, then update the weight
 		if (newWeight < weights.get(neighborCity)) {
 		    weights.put(neighborCity, newWeight);
+		    previousCities.put(neighborCity, current);
+		    mode.put(neighborCity, hop.getMode());
 		    queue.add(new CityWeight(neighborCity, newWeight));
 		}
-	    }
-	    
+	    } 
 	}
+	
+	// If there's no route then return null
+	if (weights.get(toCity) == Integer.MAX_VALUE) return null;
+	
+	
 	
 	return null;
     }
