@@ -24,7 +24,7 @@ public class TravelAssistant {
 	    int nightlyHotelCost) throws IllegalArgumentException {
 	
 	// Validate city name and nightly hotel cost
-	if (!isCityNameValid(cityName) || nightlyHotelCost < 0) throw new IllegalArgumentException();
+	if (!isCityNameValid(cityName) || nightlyHotelCost < 1) throw new IllegalArgumentException();
 	
 	// If the city is already known by the TravelAssistant, then return false
 	if (cities.containsKey(cityName)) return false;
@@ -67,7 +67,8 @@ public class TravelAssistant {
     private boolean addTravelHop(String startCity, String destinationCity, int duration,
 	    int cost, String mode) throws IllegalArgumentException {
 	// Check if the cost and duration are negative values
-	if (duration < 0 || cost < 0) throw new IllegalArgumentException();
+	if (duration < 1 || cost < 1 || !isCityNameValid(startCity)|| !isCityNameValid(destinationCity)) 
+	    throw new IllegalArgumentException();
 	
 	// Get the start city and destination city objects
 	var fromCity = cities.get(startCity);
@@ -121,10 +122,6 @@ public class TravelAssistant {
 	var toCity = cities.get(destinationCity);
 	validateCities(fromCity, toCity);
 	
-	// When an unvaccinated individual plans to travel to a destination city
-	// where the testing is required, but the city does not have the covid test centre
-	if (!toCity.isVisitable(isVaccinated)) return null;
-	
 	// Set for storing visited cities
 	Set<City> visited = new HashSet<>();
 	
@@ -133,9 +130,7 @@ public class TravelAssistant {
 	
 	// Initialize the table with max value for all the visitable cities
 	for (City city: cities.values()) {
-	    if (city.isVisitable(isVaccinated)) {
-		weights.put(city, Integer.MAX_VALUE);
-	    }
+	    weights.put(city, Integer.MAX_VALUE);
 	}
 	
 	// Table for storing previous cities
@@ -152,11 +147,12 @@ public class TravelAssistant {
 	PriorityQueue<CityWeight> queue = new PriorityQueue<>();
 	
 	// Add the start city to the queue
-	queue.add(new CityWeight(fromCity, 0));
+	queue.add(new CityWeight(fromCity, 0, false));
 	
 	while(!queue.isEmpty()) {
 	    // Remove the city with priority
-	    City current = queue.remove().getCity();
+	    CityWeight currentCityWeight = queue.remove();
+	    City current = currentCityWeight.getCity();
 	    
 	    // Add to the city to the visited set
 	    visited.add(current);
@@ -169,11 +165,11 @@ public class TravelAssistant {
 		if (visited.contains(neighborCity)) continue;
 		
 		// If not vaccinated and the test cannot be taken at the city, then skip
-		if (!neighborCity.isVisitable(isVaccinated)) continue;
+		if (!neighborCity.isVisitable(isVaccinated, currentCityWeight.isReportNegative())) continue;
 		
 		// Calculate new weight
 		var newWeight = weights.get(current) + hop.getHopWeight(costImportance, travelTimeImportance,
-			travelHopImportance, isVaccinated);
+			travelHopImportance, isVaccinated || currentCityWeight.isReportNegative());
 		
 		// If the new weight is less, then update the weight
 		if (newWeight < weights.get(neighborCity)) {
@@ -186,7 +182,8 @@ public class TravelAssistant {
 		    modes.put(neighborCity, hop.getMode());
 		    
 		    // Add it to the queue
-		    queue.add(new CityWeight(neighborCity, newWeight));
+		    queue.add(new CityWeight(neighborCity, newWeight,
+			    currentCityWeight.isReportNegative() || neighborCity.getTimeToTest() > 0));
 		}
 	    } 
 	}

@@ -33,14 +33,14 @@ public class City {
     
     // Returns total hotel cost of staying in the city
     public int getTotalHotelCosts() {
-	return testRequired ? timeToTest * nightlyHotelCosts : 0;
+	return timeToTest > 0 ? timeToTest * nightlyHotelCosts : 0;
     }
     
     // Method to check if it is possible to visit the city
-    public boolean isVisitable(boolean isVaccinated) {
-	if (isVaccinated) return true;
+    public boolean isVisitable(boolean isVaccinated, boolean isReportNegative) {
+	if (isVaccinated || isReportNegative) return true;
 	
-	return !(testRequired && timeToTest < 0);
+	return !testRequired;
     }
     
 }
