@@ -130,15 +130,11 @@ public class TravelAssistant {
 	}
     }
 
-    public List<String> planTrip(String startCity, String destinationCity, boolean isVaccinated,
+    private void validatePlanTripInputs(String startCity, String destinationCity,
 	    int costImportance, int travelTimeImportance, int travelHopImportance)
 	    throws IllegalArgumentException {
 	// Minimum valid value of the importance parameters
 	final int MIN_VALID_IMPORTANCE = 0;
-
-	// Set the source city weight to 0
-	final int SOURCE_CITY_WEIGHT = 0;
-
 	// Validate input parameters
 	if (!isCityNameValid(startCity) || !isCityNameValid(destinationCity)
 		|| costImportance < MIN_VALID_IMPORTANCE
@@ -146,7 +142,19 @@ public class TravelAssistant {
 		|| travelHopImportance < MIN_VALID_IMPORTANCE) {
 	    throw new IllegalArgumentException();
 	}
+    }
 
+    public List<String> planTrip(String startCity, String destinationCity, boolean isVaccinated,
+	    int costImportance, int travelTimeImportance, int travelHopImportance)
+	    throws IllegalArgumentException {
+
+	// Set the source city weight to 0
+	final int SOURCE_CITY_WEIGHT = 0;
+	
+	// Validate inputs
+	validatePlanTripInputs(startCity, destinationCity, costImportance, travelTimeImportance,
+		travelHopImportance);
+	
 	// Get the start city and destination city objects
 	var fromCity = cities.get(startCity);
 	var toCity = cities.get(destinationCity);
@@ -155,13 +163,8 @@ public class TravelAssistant {
 	// Set for storing visited cities
 	Set<City> visited = new HashSet<>();
 
-	// Stores the distance table from the "fromCity" node
-	Map<City, Integer> weights = new HashMap<>();
-
-	// Initialize the table with max value for all the visitable cities
-	for (City city : cities.values()) {
-	    weights.put(city, MAX_WEIGHT);
-	}
+	// Table for storing weights from the source city
+	Map<City, Integer> weights = getWeightsTable(fromCity, SOURCE_CITY_WEIGHT);
 
 	// Table for storing previous cities
 	Map<City, City> previousCities = new HashMap<>();
@@ -170,10 +173,7 @@ public class TravelAssistant {
 	Map<City, String> modes = new HashMap<>();
 	modes.put(fromCity, MODE_START);
 
-	// Set fromCity distance to 0
-	weights.put(fromCity, SOURCE_CITY_WEIGHT);
-
-	// Process cities in priority
+	// Queue for processing cities in priority
 	PriorityQueue<CityWeight> queue = new PriorityQueue<>();
 
 	// Add the start city to the queue
@@ -243,6 +243,21 @@ public class TravelAssistant {
 	}
 
 	return getPath(toCity, modes, previousCities);
+    }
+
+    private Map<City, Integer> getWeightsTable(City fromCity, int sourceWeight) {
+	// Stores the distance table from the "fromCity" node
+	Map<City, Integer> weights = new HashMap<>();
+
+	// Initialize the table with max value for all the visitable cities
+	for (City city : cities.values()) {
+	    weights.put(city, MAX_WEIGHT);
+	}
+
+	// Set fromCity distance to 0
+	weights.put(fromCity, sourceWeight);
+
+	return weights;
     }
 
     // Checks if the test is needed in the current city
