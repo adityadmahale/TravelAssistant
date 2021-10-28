@@ -23,4 +23,5 @@ public class CityWeight implements Comparable<CityWeight> {
 	public boolean isReportNegative() {
 	    return isReportNegative;
 	}
+	
 }

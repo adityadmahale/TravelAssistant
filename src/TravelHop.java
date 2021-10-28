@@ -30,16 +30,10 @@ public class TravelHop {
         return mode;
     }
     
-    // Get total cost of traveling between two cities
-    private int getTotalCost(boolean isVaccinated) {
-	return !isVaccinated ? destinationCity.getTotalHotelCosts() + cost: cost;
-    }
-    
     // Calculate weight based on the formula: 
     // totalCost * costImportance + travelTime * travelTimeImportance + hop * travelHopImportance
     public int getHopWeight(int costImportance, int travelTimeImportance, 
-	    int travelHopImportance, boolean isVaccinated) {
-	return getTotalCost(isVaccinated) * costImportance + duration * travelTimeImportance +
-		travelHopImportance;
+	    int travelHopImportance) {
+	return cost * costImportance + duration * travelTimeImportance + travelHopImportance;
     }
 }

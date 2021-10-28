@@ -147,7 +147,7 @@ public class TravelAssistant {
 	PriorityQueue<CityWeight> queue = new PriorityQueue<>();
 	
 	// Add the start city to the queue
-	queue.add(new CityWeight(fromCity, 0, false));
+	queue.add(new CityWeight(fromCity, 0, fromCity.getTimeToTest() > 0));
 	
 	while(!queue.isEmpty()) {
 	    // Remove the city with priority
@@ -164,12 +164,20 @@ public class TravelAssistant {
 		// If the city is already visited, then skip
 		if (visited.contains(neighborCity)) continue;
 		
-		// If not vaccinated and the test cannot be taken at the city, then skip
-		if (!neighborCity.isVisitable(isVaccinated, currentCityWeight.isReportNegative())) continue;
+		// Skip the neighboring city if it requires testing 
+		// and the current city does not allow testing
+		if (!isVisitable(isVaccinated, currentCityWeight, neighborCity)) continue;
+		
+		boolean isReportNegative = false;
+		int newWeight = 0;
+		if (isTestNeeded(isVaccinated, currentCityWeight, neighborCity)) {
+		    newWeight += current.getTotalHotelCosts() * costImportance;
+		    isReportNegative = true;
+		}
 		
 		// Calculate new weight
-		var newWeight = weights.get(current) + hop.getHopWeight(costImportance, travelTimeImportance,
-			travelHopImportance, isVaccinated || currentCityWeight.isReportNegative());
+		newWeight += weights.get(current) + hop.getHopWeight(costImportance, travelTimeImportance,
+			travelHopImportance);
 		
 		// If the new weight is less, then update the weight
 		if (newWeight < weights.get(neighborCity)) {
@@ -182,8 +190,7 @@ public class TravelAssistant {
 		    modes.put(neighborCity, hop.getMode());
 		    
 		    // Add it to the queue
-		    queue.add(new CityWeight(neighborCity, newWeight,
-			    currentCityWeight.isReportNegative() || neighborCity.getTimeToTest() > 0));
+		    queue.add(new CityWeight(neighborCity, newWeight, currentCityWeight.isReportNegative() || isReportNegative));
 		}
 	    } 
 	}
@@ -194,6 +201,19 @@ public class TravelAssistant {
 	return getPath(toCity, modes, previousCities);
     }
     
+    private boolean isTestNeeded(boolean isVaccinated, CityWeight currentCityWeight, City neighborCity) {
+	if (isVaccinated || currentCityWeight.isReportNegative()) return false;
+	
+	return neighborCity.isTestRequired() && currentCityWeight.getCity().getTimeToTest() > 0;
+    }
+    
+    private boolean isVisitable(boolean isVaccinated, CityWeight currentCityWeight, City neighborCity) {
+	if (isVaccinated || currentCityWeight.isReportNegative()) return true;
+	if (!neighborCity.isTestRequired()) return true;
+	
+	return currentCityWeight.getCity().getTimeToTest() >= 0;
+    }
+        
     // Returns the list of paths between two cities
     private List<String> getPath(City toCity, Map<City, String> modes, Map<City, City> previousCities) {
 	
