@@ -147,7 +147,7 @@ public class TravelAssistant {
 	PriorityQueue<CityWeight> queue = new PriorityQueue<>();
 	
 	// Add the start city to the queue
-	queue.add(new CityWeight(fromCity, 0, fromCity.getTimeToTest() > 0));
+	queue.add(new CityWeight(fromCity, 0, fromCity.getTimeToTest() >= 0));
 	
 	while(!queue.isEmpty()) {
 	    // Remove the city with priority
@@ -204,7 +204,7 @@ public class TravelAssistant {
     private boolean isTestNeeded(boolean isVaccinated, CityWeight currentCityWeight, City neighborCity) {
 	if (isVaccinated || currentCityWeight.isReportNegative()) return false;
 	
-	return neighborCity.isTestRequired() && currentCityWeight.getCity().getTimeToTest() > 0;
+	return neighborCity.isTestRequired() && currentCityWeight.getCity().getTimeToTest() >= 0;
     }
     
     private boolean isVisitable(boolean isVaccinated, CityWeight currentCityWeight, City neighborCity) {
