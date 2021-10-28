@@ -36,4 +36,8 @@ public class City {
 	return timeToTest * nightlyHotelCosts;
     }
     
+    public boolean isTestPossible() {
+	return timeToTest >= 0;
+    }
+    
 }

@@ -24,10 +24,14 @@ public class TravelAssistant {
 	    int nightlyHotelCost) throws IllegalArgumentException {
 	
 	// Validate city name and nightly hotel cost
-	if (!isCityNameValid(cityName) || nightlyHotelCost < 1) throw new IllegalArgumentException();
+	if (!isCityNameValid(cityName) || nightlyHotelCost < 1) {
+	    throw new IllegalArgumentException();
+	}
 	
 	// If the city is already known by the TravelAssistant, then return false
-	if (cities.containsKey(cityName)) return false;
+	if (cities.containsKey(cityName)) {
+	    return false;
+	}
 	
 	// At this point, the passed arguments are correct.
 	// Create a new City object and add it to the cities Map.
@@ -67,9 +71,10 @@ public class TravelAssistant {
     private boolean addTravelHop(String startCity, String destinationCity, int duration,
 	    int cost, String mode) throws IllegalArgumentException {
 	// Check if the cost and duration are negative values
-	if (duration < 1 || cost < 1 || !isCityNameValid(startCity)|| !isCityNameValid(destinationCity)) 
+	if (duration < 1 || cost < 1 || !isCityNameValid(startCity)|| !isCityNameValid(destinationCity)) {
 	    throw new IllegalArgumentException();
-	
+	}
+
 	// Get the start city and destination city objects
 	var fromCity = cities.get(startCity);
 	var toCity = cities.get(destinationCity);
@@ -94,7 +99,9 @@ public class TravelAssistant {
 	    modeOfTravel = travelOption.getMode();
 	    
 	    // If the travel hop is already present, then return true
-	    if (destinationCity.equals(toCity.getCityName()) && modeOfTravel.equals(mode)) return true;
+	    if (destinationCity.equals(toCity.getCityName()) && modeOfTravel.equals(mode)) {
+		return true;
+	    }
 	}
 	
 	return false;
@@ -104,19 +111,26 @@ public class TravelAssistant {
     public void print() {
 	for (City startCity: adjacencyList.keySet()) {
 	    var destinations =  adjacencyList.get(startCity);
-	    if (!destinations.isEmpty()) System.out.println(startCity + " -> " + destinations);
+	    if (!destinations.isEmpty()) {
+		System.out.println(startCity + " -> " + destinations);
+	    }
 	}
     }
     
     public List<String> planTrip ( String startCity, String destinationCity, boolean isVaccinated, int
 	    costImportance, int travelTimeImportance, int travelHopImportance ) throws
 	    IllegalArgumentException {
+	// Minimum valid value of the importance parameters
+	final int MIN_VALID_IMPORTANCE = 0;
+	final int SOURCE_CITY_WEIGHT = 0;
 	
 	// Validate input values
 	if (!isCityNameValid(startCity) || !isCityNameValid(destinationCity) ||
-		costImportance < 0 || travelTimeImportance < 0 || travelHopImportance < 0)
+		costImportance < MIN_VALID_IMPORTANCE || travelTimeImportance < MIN_VALID_IMPORTANCE ||
+		travelHopImportance < MIN_VALID_IMPORTANCE) {
 	    throw new IllegalArgumentException();
-	
+	}
+
 	// Get the start city and destination city objects
 	var fromCity = cities.get(startCity);
 	var toCity = cities.get(destinationCity);
@@ -141,13 +155,13 @@ public class TravelAssistant {
 	modes.put(fromCity, MODE_START);
 	
 	// Set fromCity distance to 0
-	weights.put(fromCity, 0);
+	weights.put(fromCity, SOURCE_CITY_WEIGHT);
 	
 	// Process cities in priority
 	PriorityQueue<CityWeight> queue = new PriorityQueue<>();
 	
 	// Add the start city to the queue
-	queue.add(new CityWeight(fromCity, 0, fromCity.getTimeToTest() >= 0));
+	queue.add(new CityWeight(fromCity, SOURCE_CITY_WEIGHT, fromCity.isTestPossible()));
 	
 	while(!queue.isEmpty()) {
 	    // Remove the city with priority
@@ -162,11 +176,15 @@ public class TravelAssistant {
 		City neighborCity = hop.getDestinationCity();
 		
 		// If the city is already visited, then skip
-		if (visited.contains(neighborCity)) continue;
+		if (visited.contains(neighborCity)) {
+		    continue;
+		}
 		
 		// Skip the neighboring city if it requires testing 
 		// and the current city does not allow testing
-		if (!isVisitable(isVaccinated, currentCityWeight, neighborCity)) continue;
+		if (!isVisitable(isVaccinated, currentCityWeight, neighborCity)) {
+		    continue;
+		}
 		
 		boolean isReportNegative = false;
 		int newWeight = 0;
@@ -196,22 +214,30 @@ public class TravelAssistant {
 	}
 	
 	// If there's no route, then return null
-	if (weights.get(toCity) == Integer.MAX_VALUE) return null;
+	if (weights.get(toCity) == Integer.MAX_VALUE) {
+	    return null;
+	}
 	
 	return getPath(toCity, modes, previousCities);
     }
     
     private boolean isTestNeeded(boolean isVaccinated, CityWeight currentCityWeight, City neighborCity) {
-	if (isVaccinated || currentCityWeight.isReportNegative()) return false;
+	if (isVaccinated || currentCityWeight.isReportNegative()) {
+	    return false;
+	}
 	
-	return neighborCity.isTestRequired() && currentCityWeight.getCity().getTimeToTest() >= 0;
+	return neighborCity.isTestRequired() && currentCityWeight.getCity().isTestPossible();
     }
     
     private boolean isVisitable(boolean isVaccinated, CityWeight currentCityWeight, City neighborCity) {
-	if (isVaccinated || currentCityWeight.isReportNegative()) return true;
-	if (!neighborCity.isTestRequired()) return true;
+	if (isVaccinated || currentCityWeight.isReportNegative()) {
+	    return true;
+	}
+	if (!neighborCity.isTestRequired()) {
+	    return true;
+	}
 	
-	return currentCityWeight.getCity().getTimeToTest() >= 0;
+	return currentCityWeight.getCity().isTestPossible();
     }
         
     // Returns the list of paths between two cities

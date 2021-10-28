@@ -32,8 +32,7 @@ public class TravelHop {
     
     // Calculate weight based on the formula: 
     // totalCost * costImportance + travelTime * travelTimeImportance + hop * travelHopImportance
-    public int getHopWeight(int costImportance, int travelTimeImportance, 
-	    int travelHopImportance) {
+    public int getHopWeight(int costImportance, int travelTimeImportance, int travelHopImportance) {
 	return cost * costImportance + duration * travelTimeImportance + travelHopImportance;
     }
 }
