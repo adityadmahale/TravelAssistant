@@ -37,7 +37,7 @@ class TestAddFlight {
 		() -> travelAssistant.addFlight(null, "Toronto", 2, 100),
 		"The city name cannot be null");
 	
-	// Start city is empty string
+	// Start city is an empty string
 	assertThrows(IllegalArgumentException.class, 
 		() -> travelAssistant.addFlight("", "Toronto", 2, 100),
 		"The city name cannot be an empty string");
@@ -47,7 +47,7 @@ class TestAddFlight {
 		() -> travelAssistant.addFlight("Halifax", null, 2, 100),
 		"The city name cannot be null");
 	
-	// Destination city is empty string
+	// Destination city is an empty string
 	assertThrows(IllegalArgumentException.class, 
 		() -> travelAssistant.addFlight("Halifax", "", 2, 100),
 		"The city name cannot be an empty string");

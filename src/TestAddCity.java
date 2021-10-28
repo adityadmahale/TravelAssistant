@@ -46,7 +46,7 @@ class TestAddCity {
 	
 	// Time to test is 0
 	boolean output3 = travelAssistant.addCity("Mumbai", false, 0, 100);
-	assertTrue(output3, "Time to test can be 1");
+	assertTrue(output3, "Time to test can be 0");
     }
     
     
