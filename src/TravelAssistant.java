@@ -20,7 +20,7 @@ public class TravelAssistant {
     // Stores the city name and its corresponding City object.
     private Map<String, City> cities = new HashMap<>();
     
-    // Adjacency list
+    // Adjacency list for storing relation between cities and travel hops
     private Map<City, List<TravelHop>> adjacencyList = new HashMap<>();
     
     public boolean addCity( String cityName, boolean testRequired, int timeToTest,
@@ -46,6 +46,7 @@ public class TravelAssistant {
 	return true;
     }
     
+    // Checks if the city name is invalid
     private boolean isCityNameValid(String cityName) {
 	return cityName != null && cityName != "";
     }
@@ -92,11 +93,17 @@ public class TravelAssistant {
 	return true;
     }
     
+    // Checks if the travel hop is already present
     private boolean isTravelHopPresent(City fromCity, City toCity, String mode) 
 	    throws IllegalArgumentException {		
-	// Handle the case when the edge is already present.
+	
+	// Name of the destination city
 	String destinationCity;
+	
+	// Mode of travel
 	String modeOfTravel;
+	
+	// Iterate through all the travel hops
 	for (var travelOption: adjacencyList.get(fromCity)) {
 	    destinationCity = travelOption.getDestinationCity().getCityName();
 	    modeOfTravel = travelOption.getMode();
@@ -125,9 +132,11 @@ public class TravelAssistant {
 	    IllegalArgumentException {
 	// Minimum valid value of the importance parameters
 	final int MIN_VALID_IMPORTANCE = 0;
+	
+	// Set the source city weight to 0
 	final int SOURCE_CITY_WEIGHT = 0;
 	
-	// Validate input values
+	// Validate input parameters
 	if (!isCityNameValid(startCity) || !isCityNameValid(destinationCity) ||
 		costImportance < MIN_VALID_IMPORTANCE || travelTimeImportance < MIN_VALID_IMPORTANCE ||
 		travelHopImportance < MIN_VALID_IMPORTANCE) {
@@ -176,6 +185,8 @@ public class TravelAssistant {
 	    
 	    // Loop for all the neighboring cities
 	    for (var hop: adjacencyList.get(current)) {
+		
+		// Get the neighbor city
 		City neighborCity = hop.getDestinationCity();
 		
 		// If the city is already visited, then skip
@@ -189,8 +200,13 @@ public class TravelAssistant {
 		    continue;
 		}
 		
+		// Defines if the test report is negative
 		boolean isReportNegative = false;
+		
+		// Initialize weight to the neighbor city to 0
 		int newWeight = 0;
+		
+		// Checks if the test is needed and updates the weight
 		if (isTestNeeded(isVaccinated, currentCityWeight, neighborCity)) {
 		    newWeight += current.getTotalHotelCosts() * costImportance;
 		    isReportNegative = true;
@@ -224,7 +240,9 @@ public class TravelAssistant {
 	return getPath(toCity, modes, previousCities);
     }
     
+    // Checks if the test is needed in the current city
     private boolean isTestNeeded(boolean isVaccinated, CityWeight currentCityWeight, City neighborCity) {
+	// When an individual is vaccinated or the report is negative, then the test is not required
 	if (isVaccinated || currentCityWeight.isReportNegative()) {
 	    return false;
 	}
@@ -233,13 +251,18 @@ public class TravelAssistant {
     }
     
     private boolean isVisitable(boolean isVaccinated, CityWeight currentCityWeight, City neighborCity) {
+	// When an individual is vaccinated or the report is negative, 
+	// then it's possible to visit the neighbor city
 	if (isVaccinated || currentCityWeight.isReportNegative()) {
 	    return true;
 	}
+	
+	// When the neighbor city does not require testing, then the visit is possible
 	if (!neighborCity.isTestRequired()) {
 	    return true;
 	}
 	
+	// Otherwise, when the test is possible in the current city, then it is possible to visit the neighbor city
 	return currentCityWeight.getCity().isTestPossible();
     }
         
@@ -252,7 +275,7 @@ public class TravelAssistant {
 	// Push the destination city to the stack
 	stack.push(toCity);
 	
-	// Push all the cities to by getting the previously visted cities
+	// Push all the cities to by getting the previously visited cities
 	City previousCity = previousCities.get(toCity);
 	while(previousCity != null) {
 	    stack.push(previousCity);

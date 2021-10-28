@@ -1,10 +1,14 @@
 // Vertex of the graph
 // Holds city related information
 public class City {
-
+    
+    // City name
     private String cityName;
+    // Stores if the test is required in this city
     private boolean testRequired;
+    // Stores the time to test in days
     private int timeToTest;
+    // Stores the nightly hotel cost in this city
     private int nightlyHotelCosts;
     
     public City(String cityName, boolean testRequired, int timeToTest, int nightlyHotelCosts) {
@@ -18,15 +22,18 @@ public class City {
     public String toString() {
 	return cityName;
     }
-
+    
+    // Returns the name of the city
     public String getCityName() {
 	return cityName;
     }
-
+    
+    // Returns if the test is required in the city
     public boolean isTestRequired() {
 	return testRequired;
     }
-
+    
+    // Returns time to test
     public int getTimeToTest() {
 	return timeToTest;
     }
@@ -36,6 +43,7 @@ public class City {
 	return timeToTest * nightlyHotelCosts;
     }
     
+    // Checks if the test is possible in this city
     public boolean isTestPossible() {
 	return timeToTest >= 0;
     }
