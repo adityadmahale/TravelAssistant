@@ -158,7 +158,15 @@ public class TravelAssistant {
 	// Get the start city and destination city objects
 	var fromCity = cities.get(startCity);
 	var toCity = cities.get(destinationCity);
-	validateCities(fromCity, toCity);
+	if (fromCity == null || toCity == null) {
+	    throw new IllegalArgumentException();
+	}
+	
+	if (fromCity == toCity) {
+	    List<String> path = new ArrayList<>();
+	    path.add(MODE_START + " " + fromCity.getCityName());
+	    return path;
+	}
 
 	// Set for storing visited cities
 	Set<City> visited = new HashSet<>();
