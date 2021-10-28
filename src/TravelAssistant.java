@@ -10,15 +10,18 @@ import java.util.Stack;
 public class TravelAssistant {
     
     // Constants defining mode of travel
-    public static final String MODE_START = "start";
-    public static final String MODE_FLY = "fly";
-    public static final String MODE_TRAIN = "train";
+    private static final String MODE_START = "start";
+    private static final String MODE_FLY = "fly";
+    private static final String MODE_TRAIN = "train";
+    
+    // Maximum weight between two cities
+    private static final int MAX_WEIGHT = Integer.MAX_VALUE;
     
     // Stores the city name and its corresponding City object.
-    Map<String, City> cities = new HashMap<>();
+    private Map<String, City> cities = new HashMap<>();
     
     // Adjacency list
-    Map<City, List<TravelHop>> adjacencyList = new HashMap<>();
+    private Map<City, List<TravelHop>> adjacencyList = new HashMap<>();
     
     public boolean addCity( String cityName, boolean testRequired, int timeToTest,
 	    int nightlyHotelCost) throws IllegalArgumentException {
@@ -144,7 +147,7 @@ public class TravelAssistant {
 	
 	// Initialize the table with max value for all the visitable cities
 	for (City city: cities.values()) {
-	    weights.put(city, Integer.MAX_VALUE);
+	    weights.put(city, MAX_WEIGHT);
 	}
 	
 	// Table for storing previous cities
@@ -214,7 +217,7 @@ public class TravelAssistant {
 	}
 	
 	// If there's no route, then return null
-	if (weights.get(toCity) == Integer.MAX_VALUE) {
+	if (weights.get(toCity) == MAX_WEIGHT) {
 	    return null;
 	}
 	
